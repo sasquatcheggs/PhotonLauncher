@@ -22,3 +22,14 @@ The game executable must be specified in the first field.
 For now, the files specified in the first four fields must exist for the launcher to work properly. In they future, the configs may be auto-generated.
 
 Redirect injection functionality is planned, but for now, [PhotonRedirector](https://github.com/sasquatcheggs/PhotonRedirector) is required.
+
+## Releases:
+Releases will be published as an all-in-one drop-in solution.
+
+They will include the following:
+- PhotonRedirector.dll and LANSettings.txt
+- winmm.dll and winmm.txt (for injecting PhotonRedirector)
+- Luxon Server.exe, config.yml, and LuxonLicense.txt
+- PhotonLauncher.exe compiled as a self-contained executable and launcher_config.json
+
+Once these files are placed next to a game executable, the executable must be specified in `launcher_config.json` before it is ready to use.
