@@ -1,9 +1,9 @@
-##PhotonLauncher
+# PhotonLauncher
 
 This project was written using Deepseek.
-It allows you to conveniently launch and play Photon games over LAN. LuxonServer is required to host a game using this launcher.
+It allows you to conveniently launch and play Photon games over LAN. [LuxonServer](https://github.com/niansa/LuxonServer) is required to host a game using this launcher.
 
-#Usage:
+## Usage:
 On first launch, `launcher_config.json` will be created. It will look like this:
 ```
 {
@@ -18,6 +18,7 @@ On first launch, `launcher_config.json` will be created. It will look like this:
 }
 ```
 The game executable must be specified in the first field.
-For now, the files specified in the first four fields must exist for the launcher to work properly. In they future, they may be auto-generated.
 
-Redirect injection functionality is planned, but for now, PhotonRedirector is required.
+For now, the files specified in the first four fields must exist for the launcher to work properly. In they future, the configs may be auto-generated.
+
+Redirect injection functionality is planned, but for now, [PhotonRedirector](https://github.com/sasquatcheggs/PhotonRedirector) is required.
