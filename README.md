@@ -16,7 +16,7 @@ On first launch, `launcher_config.json` will be created. It will look like this:
   "LastHostIP": "",
   "LastJoinIP": "127.0.0.1",
   "KeepLauncherOpenOnJoin": false,
-  "CustomHostIP": ""
+  "CustomHostIP": "127.0.0.1"
   "InjectorDllPath": "PhotonRedirector.dll",
   "EnableDllInjection": true
 }
