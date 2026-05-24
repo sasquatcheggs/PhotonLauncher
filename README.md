@@ -1,9 +1,11 @@
 # PhotonLauncher
 
-This project was written using Deepseek.
-It allows you to conveniently launch and play Photon games over LAN. [LuxonServer](https://github.com/niansa/LuxonServer) is required to host a game using this launcher.
+PhotonLauncher was made to simplify the process of connecting with friends to play your Photon games over LAN. It manages the configuration files of the following software.
+- [LuxonServer](https://github.com/niansa/LuxonServer) > Required to host a game.
+- [PhotonRedirector](https://github.com/sasquatcheggs/PhotonRedirector) > Required for joining, even if you are the host.
 
 ## Usage:
+
 On first launch, `launcher_config.json` will be created. It will look like this:
 ```
 {
@@ -15,21 +17,31 @@ On first launch, `launcher_config.json` will be created. It will look like this:
   "LastJoinIP": "127.0.0.1",
   "KeepLauncherOpenOnJoin": false,
   "CustomHostIP": ""
+  "InjectorDllPath": "PhotonRedirector.dll",
+  "EnableDllInjection": true
 }
 ```
 The game executable must be specified in the first field.
+Right now, the files referenced in the first four fields must exist for all features to work. In the future, the configs may be auto-generated.
 
-For now, the files specified in the first four fields must exist for the launcher to work properly. In they future, the configs may be auto-generated.
-
-Redirect injection functionality is planned, but for now, [PhotonRedirector](https://github.com/sasquatcheggs/PhotonRedirector) is required.
+DLL injection is implimented, but can be disabled if you choose to inject PhotonRedirector another way.  
+Support for more methods of redirecting Photon's traffic (such as hosts file editing) may be implimented in the future.
 
 ## Releases:
 Releases will be published as an all-in-one drop-in solution.
 
 They will include the following:
 - PhotonRedirector.dll and LANSettings.txt
-- winmm.dll and winmm.txt (for injecting PhotonRedirector)
 - Luxon Server.exe, config.yml, and LuxonLicense.txt
 - PhotonLauncher.exe compiled as a self-contained executable and launcher_config.json
 
 Once these files are placed next to a game executable, the executable must be specified in `launcher_config.json` before it is ready to use.
+
+## Disclaimer:
+
+This project was written using Deepseek. I tinker with it when I get time. It may be junk.
+
+## Credits:
+
+- [***niansa***](https://github.com/niansa) > This launcher only simplifies what his server makes possible.
+- [***BTFighter***](https://github.com/BTFighter) > His inspiration, motivation, and assistance have been invaluable.
