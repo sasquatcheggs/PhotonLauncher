@@ -13,6 +13,8 @@ namespace LuxonLauncher
         public string LastJoinIP { get; set; } = "";
         public bool KeepLauncherOpenOnJoin { get; set; } = false;
         public string CustomHostIP { get; set; } = "";
+        public string InjectorDllPath { get; set; } = "PhotonRedirector.dll";
+        public bool EnableDllInjection { get; set; } = true;
     }
 
     // Simplified YAML configuration structure - using Dictionary for flexibility

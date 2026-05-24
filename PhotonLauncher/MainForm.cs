@@ -31,10 +31,24 @@ namespace LuxonLauncher
 
         public MainForm()
         {
+            // Check for admin rights
+            if (!IsRunningAsAdministrator())
+            {
+                AppendLog("[WARNING] Not running as Administrator. Injection may fail.\n");
+                AppendLog("[INFO] Restart as Administrator for DLL injection to work.\n");
+            }
+
             InitializeComponent();
             LoadConfig();
             PopulateNetworkAdapters();
             LoadPersistedSettings();
+        }
+
+        private bool IsRunningAsAdministrator()
+        {
+            var identity = System.Security.Principal.WindowsIdentity.GetCurrent();
+            var principal = new System.Security.Principal.WindowsPrincipal(identity);
+            return principal.IsInRole(System.Security.Principal.WindowsBuiltInRole.Administrator);
         }
 
         private void InitializeComponent()
@@ -361,14 +375,7 @@ namespace LuxonLauncher
                 StartLuxonServer();
 
                 // Launch game
-                if (!string.IsNullOrEmpty(launcherConfig.GameExecutablePath) && File.Exists(launcherConfig.GameExecutablePath))
-                {
-                    Process.Start(new ProcessStartInfo(launcherConfig.GameExecutablePath) { UseShellExecute = true });
-                }
-                else
-                {
-                    AppendLog($"[WARNING] Game executable not found: {launcherConfig.GameExecutablePath}\n");
-                }
+                LaunchGameWithInjection();
 
                 if (hostButton != null) hostButton.Enabled = false;
                 if (joinButton != null) joinButton.Enabled = false;
@@ -463,6 +470,80 @@ namespace LuxonLauncher
             }
         }
 
+        private void LaunchGameWithInjection()
+        {
+            if (!launcherConfig.EnableDllInjection)
+            {
+                // Normal launch without injection
+                if (!string.IsNullOrEmpty(launcherConfig.GameExecutablePath) && File.Exists(launcherConfig.GameExecutablePath))
+                {
+                    Process.Start(new ProcessStartInfo(launcherConfig.GameExecutablePath) { UseShellExecute = true });
+                    AppendLog("[INFO] Game launched (injection disabled)\n");
+                }
+                return;
+            }
+
+            string dllPath = launcherConfig.InjectorDllPath;
+
+            // Resolve relative path
+            if (!Path.IsPathRooted(dllPath))
+            {
+                dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dllPath);
+            }
+
+            AppendLog($"[INFO] Checking for DLL at: {dllPath}\n");
+
+            if (!File.Exists(dllPath))
+            {
+                AppendLog($"[WARNING] DLL not found at: {dllPath}. Launching without injection.\n");
+
+                // Fallback to normal launch
+                if (!string.IsNullOrEmpty(launcherConfig.GameExecutablePath) && File.Exists(launcherConfig.GameExecutablePath))
+                {
+                    Process.Start(new ProcessStartInfo(launcherConfig.GameExecutablePath) { UseShellExecute = true });
+                }
+                return;
+            }
+
+            try
+            {
+                AppendLog($"[INFO] Launching game: {launcherConfig.GameExecutablePath}\n");
+                AppendLog($"[INFO] Preparing to inject: {Path.GetFileName(dllPath)}\n");
+
+                // Launch the game
+                var gameProcess = new Process();
+                gameProcess.StartInfo.FileName = launcherConfig.GameExecutablePath;
+                gameProcess.StartInfo.UseShellExecute = true;
+                gameProcess.Start();
+
+                int pid = gameProcess.Id;
+                AppendLog($"[INFO] Game started with PID: {pid}\n");
+
+                // Wait a moment for the process to fully initialize
+                System.Threading.Thread.Sleep(1500);
+
+                // Inject the DLL
+                AppendLog("[INFO] Attempting DLL injection...\n");
+                bool success = DllInjector.InjectIntoProcess(gameProcess, dllPath);
+
+                if (success)
+                {
+                    AppendLog("[SUCCESS] DLL injected successfully!\n");
+                }
+                else
+                {
+                    AppendLog("[ERROR] DLL injection failed - see previous error\n");
+                }
+            }
+            catch (Exception ex)
+            {
+                AppendLog($"[ERROR] Failed to inject: {ex.Message}\n");
+
+                // The game process might still be running, let the user know
+                AppendLog("[INFO] Game may still be running without the DLL\n");
+            }
+        }
+
         private void AppendLog(string text)
         {
             if (logBox != null)
@@ -507,16 +588,7 @@ namespace LuxonLauncher
                 SaveConfig();
 
                 // Launch game
-                if (!string.IsNullOrEmpty(launcherConfig.GameExecutablePath) && File.Exists(launcherConfig.GameExecutablePath))
-                {
-                    Process.Start(new ProcessStartInfo(launcherConfig.GameExecutablePath) { UseShellExecute = true });
-                    AppendLog($"[INFO] Game launched, connecting to server at {ipToUse}\n");
-                }
-                else
-                {
-                    MessageBox.Show($"Game executable not found: {launcherConfig.GameExecutablePath}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
+                LaunchGameWithInjection();
 
                 if (!launcherConfig.KeepLauncherOpenOnJoin)
                 {
