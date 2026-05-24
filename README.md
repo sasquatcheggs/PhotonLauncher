@@ -10,7 +10,7 @@ On first launch, `launcher_config.json` will be created. It will look like this:
 ```
 {
   "GameExecutablePath": "",
-  "LuxonServerPath": "Luxon Server.exe",
+  "LuxonServerPath": "LuxonServer.exe",
   "LuxonConfigPath": "config.yml",
   "RedirectorConfigPath": "LANSettings.txt",
   "LastHostIP": "",
@@ -32,7 +32,7 @@ Releases will be published as an all-in-one drop-in solution.
 
 They will include the following:
 - PhotonRedirector.dll and LANSettings.txt
-- Luxon Server.exe, config.yml, and LuxonLicense.txt
+- LuxonServer.exe, config.yml, and LuxonLicense.txt
 - PhotonLauncher.exe compiled as a self-contained executable and launcher_config.json
 
 Once these files are placed next to a game executable, the executable must be specified in `launcher_config.json` before it is ready to use.
