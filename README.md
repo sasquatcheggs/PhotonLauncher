@@ -28,7 +28,7 @@ DLL injection is implimented, but can be disabled if you choose to inject Photon
 Support for more methods of redirecting Photon's traffic (such as hosts file editing) may be implimented in the future.
 
 ## Releases:
-Releases will be published as an all-in-one drop-in solution.
+[Releases](https://github.com/sasquatcheggs/PhotonLauncher/releases) will be published as an all-in-one drop-in solution.
 
 They will include the following:
 - PhotonRedirector.dll and LANSettings.txt
